@@ -10,7 +10,7 @@ export const pool = mysql.createPool({
   queueLimit: 0,
 });
 
-export async function query(sql: string, values?: any[]) {
+export async function query(sql: string, values: any[] = []) {
   const conn = await pool.getConnection();
   try {
     const [rows] = await conn.execute(sql, values);
