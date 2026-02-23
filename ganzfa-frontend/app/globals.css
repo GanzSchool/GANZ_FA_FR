@@ -56,3 +56,5 @@ button:disabled {
     transform: translateY(0);
   }
 }
+
+body { outline: 3px solid red; }
