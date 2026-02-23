@@ -36,6 +36,15 @@ function calculatePoints(diak: any) {
 }
 
 export async function POST(req: NextRequest) {
+
+    // ==== TEMP DIAG ====
+    console.log("MYSQL_HOST:", process.env.MYSQL_HOST);
+    console.log("MYSQL_PORT:", process.env.MYSQL_PORT);
+    console.log("MYSQL_USER:", process.env.MYSQL_USER);
+    console.log("MYSQL_DATABASE:", process.env.MYSQL_DATABASE);
+    // ===================
+
+  
   try {
     const { oktatasiazonosito, szuletesidatum } = await req.json();
 
