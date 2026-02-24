@@ -31,10 +31,10 @@ export default function Home() {
         localStorage.setItem("diak", JSON.stringify(adat))
         router.push("/adatok")
       } else {
-        setHiba("Hibas azonosito vagy jelszo")
+        setHiba("Hibás azonositó vagy jelszó")
       }
     } catch {
-      setHiba("Halozati hiba tortent. Probald ujra.")
+      setHiba("Hálózati hiba történt. Próbálja újra.")
     } finally {
       setBetolt(false)
     }
@@ -56,17 +56,17 @@ export default function Home() {
             <GraduationCap className="h-8 w-8 text-primary" />
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-primary-foreground">
-            GANZ FA
+           GANZ Felvételi Pont
           </h1>
           <p className="mt-1.5 text-sm text-primary-foreground/70">
-            {"Diak portal \u2013 Jelentkezz be az adataid megtekintegesehez"}
+            {"Felvételi portál \u2013 Jelentkezz be az adataid megtekintéséhez"}
           </p>
         </div>
 
         {/* Login Card */}
         <div className="rounded-2xl bg-card p-7 shadow-xl shadow-black/10">
           <h2 className="mb-6 text-lg font-semibold text-card-foreground">
-            {"Belepes"}
+            {"Belépés"}
           </h2>
 
           <div className="flex flex-col gap-5">
@@ -76,13 +76,13 @@ export default function Home() {
                 htmlFor="om-id"
                 className="mb-1.5 block text-sm font-medium text-card-foreground"
               >
-                {"OM azonosito"}
+                {"OM azonosító"}
               </label>
               <input
                 id="om-id"
                 type="text"
                 inputMode="numeric"
-                placeholder="pl. 72111111111"
+                placeholder="pl. 7211111111"
                 value={oktatasiAzonosito}
                 onChange={(e) => setOktatasiAzonosito(e.target.value)}
                 onKeyDown={handleKeyDown}
@@ -96,30 +96,18 @@ export default function Home() {
                 htmlFor="password"
                 className="mb-1.5 block text-sm font-medium text-card-foreground"
               >
-                {"Jelszo"}
+                {"Születési dátum"}
               </label>
               <div className="relative">
                 <input
                   id="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Add meg a jelszavad"
+                  type="text"
+                  placeholder="Születési dátum: 2000-01-01"
                   value={jelszo}
                   onChange={(e) => setJelszo(e.target.value)}
                   onKeyDown={handleKeyDown}
                   className="w-full rounded-xl border border-border bg-background px-4 py-3 pr-11 text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20"
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
-                  aria-label={showPassword ? "Jelszo elrejtese" : "Jelszo megjelenitese"}
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4.5 w-4.5" />
-                  ) : (
-                    <Eye className="h-4.5 w-4.5" />
-                  )}
-                </button>
               </div>
             </div>
 
