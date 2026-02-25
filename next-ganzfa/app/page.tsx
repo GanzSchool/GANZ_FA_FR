@@ -39,7 +39,7 @@ export default function Home() {
         localStorage.setItem("diak", JSON.stringify(adat))
         router.push("/adatok")
       } else {
-        setHiba("Hibás azonosító vagy jelszó")
+        setHiba("Hibás OM azonosító vagy születési dátum")
       }
     } catch {
       setHiba("Hálózati hiba történt. Próbálja újra.")
