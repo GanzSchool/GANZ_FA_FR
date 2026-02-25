@@ -55,17 +55,7 @@ const PONT_MEZOK: Record<string, string> = {
   matematika_pontok: "Matematika pontok"
 }
 
-const JELÖLÉS_ES_FELVETT_MEZOK: Record<string, string> = {
-  jelolt_0101: "0101 jelölve",
-  jelolt_0102: "0102 jelölve",
-  jelolt_0103: "0103 jelölve",
-  jelolt_0104: "0104 jelölve",
 
-  felvett_0101: "0101 felvettük (0/1)",
-  felvett_0102: "0102 felvettük (0/1)",
-  felvett_0103: "0103 felvettük (0/1)",
-  felvett_0104: "0104 felvettük (0/1)",
-}
 
 /* ------------------------------------------------------------------ */
 /*  Képzések (0101-0104)                                               */
@@ -552,7 +542,6 @@ export default function Adatok() {
           />
           <IskolaiPontokCard diak={diak} />
           <FelveteliRangsorCard diak={diak} />
-          <SectionCard title="Jelölések és felvettek (0101–0104)" icon={CheckSquare} fields={JELÖLÉS_ES_FELVETT_MEZOK} diak={diak} />
         </div>
 
         <p className="mt-10 text-center text-xs text-muted-foreground">
