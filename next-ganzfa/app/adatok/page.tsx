@@ -37,7 +37,7 @@ const HETEDIKES_MEZOK: Record<string, string> = {
   het_tortenelem: "Történelem",
   het_idegennyelv: "Idegen nyelv",
   het_fizika: "Fizika",
-  het_technika: "Technika",
+  het_technika: "Digitális kultúra",
 }
 
 const NYOLCADIKOS_MEZOK: Record<string, string> = {
@@ -47,7 +47,7 @@ const NYOLCADIKOS_MEZOK: Record<string, string> = {
   nyolc_tortenelem: "Történelem",
   nyolc_idegennyelv: "Idegen nyelv",
   nyolc_fizika: "Fizika",
-  nyolc_technika: "Technika",
+  nyolc_technika: "Digitális kultúra",
 }
 
 const PONT_MEZOK: Record<string, string> = {
@@ -414,7 +414,7 @@ function FelveteliRangsorCard({ diak }: { diak: DiakAdat }) {
 
         {/* 3) Végleges rangsor */}
         <div>
-          <div className="mb-3 text-sm font-semibold text-foreground">Végleges rangsor</div>
+          <div className="mb-3 text-sm font-semibold text-foreground">Végleges felvételi eredmény</div>
 
           <div className="divide-y divide-border rounded-xl border border-border">
             <div className="flex items-center justify-between px-3 py-2 text-sm">
