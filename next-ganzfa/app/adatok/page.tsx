@@ -52,8 +52,7 @@ const NYOLCADIKOS_MEZOK: Record<string, string> = {
 
 const PONT_MEZOK: Record<string, string> = {
   magyar_pontok: "Magyar pontok",
-  matematika_pontok: "Matematika pontok",
-  hozott_pontok: "Hozott pontok",
+  matematika_pontok: "Matematika pontok"
 }
 
 const JELÖLÉS_ES_FELVETT_MEZOK: Record<string, string> = {
