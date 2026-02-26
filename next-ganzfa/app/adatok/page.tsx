@@ -10,7 +10,6 @@ import {
   Award,
   Target,
   School,
-  CheckSquare,
 } from "lucide-react"
 
 interface DiakAdat {
@@ -60,10 +59,24 @@ const PONT_MEZOK: Record<string, string> = {
 /* ------------------------------------------------------------------ */
 
 const KEPZESEK = [
-  { kod: "0101", label: "Technikum, angol nyelvi előkészítő + 5 évfolyam, magyar - angol két tanítási nyelvű iskolai oktatás" },
-  { kod: "0102", label: "Technikum, 5 évfolyam, magyar - angol két tanítási nyelvű iskolai oktatás, szoftverfejlesztő és -tesztelő technikus" },
-  { kod: "0103", label: "Technikum, 5 évfolyam, szoftverfejlesztő és -tesztelő technikus" },
-  { kod: "0104", label: "Technikum, 5 évfolyam, Gépész technikus CAD-CAM szakmairány" },
+  {
+    kod: "0101",
+    label:
+      "Technikum, angol nyelvi előkészítő + 5 évfolyam, magyar - angol két tanítási nyelvű iskolai oktatás",
+  },
+  {
+    kod: "0102",
+    label:
+      "Technikum, 5 évfolyam, magyar - angol két tanítási nyelvű iskolai oktatás, szoftverfejlesztő és -tesztelő technikus",
+  },
+  {
+    kod: "0103",
+    label: "Technikum, 5 évfolyam, szoftverfejlesztő és -tesztelő technikus",
+  },
+  {
+    kod: "0104",
+    label: "Technikum, 5 évfolyam, Gépész technikus CAD-CAM szakmairány",
+  },
 ] as const
 
 /* ------------------------------------------------------------------ */
@@ -111,7 +124,11 @@ function formatErtek(kulcs: string, ertek: string | number | null | undefined): 
     return String(ertek)
   }
 
-  if (kulcs.endsWith("_idopont") || kulcs === "ganz_idopont" || kulcs === "nyelvi_szintfelmeres_idopont") {
+  if (
+    kulcs.endsWith("_idopont") ||
+    kulcs === "ganz_idopont" ||
+    kulcs === "nyelvi_szintfelmeres_idopont"
+  ) {
     return formatDatumIdo(ertek)
   }
 
@@ -152,7 +169,6 @@ function kepzesNevFromDiak(diak: DiakAdat, kod: string): string {
     const v = diak[f]
     if (typeof v === "string" && v.includes(kod)) return kepzesNevFromKod(kod)
   }
-  // fallback
   const felvett = diak["felvett_kepzes"]
   if (typeof felvett === "string" && felvett.includes(kod)) return kepzesNevFromKod(kod)
   return kepzesNevFromKod(kod)
@@ -357,13 +373,9 @@ function IskolaiPontokCard({ diak }: { diak: DiakAdat }) {
 function FelveteliRangsorCard({ diak }: { diak: DiakAdat }) {
   const { felvettek, kod } = felvettekE(diak)
 
-  const veglegesSzoveg = felvettek
-    ? "Felvételt nyert"
-    : "Hamarosan"
+  const veglegesSzoveg = felvettek ? "Felvételt nyert" : "Hamarosan"
 
-  const veglegesKepzesSor = felvettek
-    ? `${kod} – ${kepzesNevFromKod(kod)}`
-    : "Hamarosan"
+  const veglegesKepzesSor = felvettek ? `${kod} – ${kepzesNevFromKod(kod)}` : "Hamarosan"
 
   return (
     <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
@@ -386,13 +398,26 @@ function FelveteliRangsorCard({ diak }: { diak: DiakAdat }) {
           </div>
 
           <div className="mt-2 divide-y divide-border rounded-xl border border-border">
-            {KEPZESEK.map((k) => (
-              <div key={k.kod} className="grid grid-cols-12 gap-2 px-3 py-2 text-sm">
-                <div className="col-span-2 font-semibold text-primary">{megjelolesSorrend(diak, k.kod)}</div>
-                <div className="col-span-2 text-muted-foreground">{k.kod}</div>
-                <div className="col-span-8 text-card-foreground text-xs">{k.label}</div>
-              </div>
-            ))}
+            {KEPZESEK.map((k) => {
+              const sorszam = megjelolesSorrend(diak, k.kod)
+              const vanJeloles = sorszam !== "-"
+
+              return (
+                <div
+                  key={k.kod}
+                  className="grid grid-cols-12 gap-2 px-3 py-2 text-sm items-center"
+                >
+                  <div className="col-span-2 font-semibold text-primary flex items-center gap-2">
+                    {vanJeloles && (
+                      <span className="inline-block h-2.5 w-2.5 rounded-full bg-emerald-500" />
+                    )}
+                    <span>{sorszam}</span>
+                  </div>
+                  <div className="col-span-2 text-muted-foreground">{k.kod}</div>
+                  <div className="col-span-8 text-card-foreground text-xs">{k.label}</div>
+                </div>
+              )
+            })}
           </div>
         </div>
 
@@ -407,13 +432,26 @@ function FelveteliRangsorCard({ diak }: { diak: DiakAdat }) {
           </div>
 
           <div className="mt-2 divide-y divide-border rounded-xl border border-border">
-            {KEPZESEK.map((k) => (
-              <div key={k.kod} className="grid grid-cols-12 gap-2 px-3 py-2 text-sm">
-                <div className="col-span-2 font-semibold text-primary">{elozetesHelyezes(diak, k.kod)}</div>
-                <div className="col-span-2 text-muted-foreground">{k.kod}</div>
-                <div className="col-span-8 text-card-foreground text-xs">{k.label}</div>
-              </div>
-            ))}
+            {KEPZESEK.map((k) => {
+              const helyezes = elozetesHelyezes(diak, k.kod)
+              const vanJeloles = helyezes !== "-"
+
+              return (
+                <div
+                  key={k.kod}
+                  className="grid grid-cols-12 gap-2 px-3 py-2 text-sm items-center"
+                >
+                  <div className="col-span-2 font-semibold text-primary flex items-center gap-2">
+                    {vanJeloles && (
+                      <span className="inline-block h-2.5 w-2.5 rounded-full bg-emerald-500" />
+                    )}
+                    <span>{helyezes}</span>
+                  </div>
+                  <div className="col-span-2 text-muted-foreground">{k.kod}</div>
+                  <div className="col-span-8 text-card-foreground text-xs">{k.label}</div>
+                </div>
+              )
+            })}
           </div>
         </div>
 
@@ -552,7 +590,7 @@ export default function Adatok() {
             title="Központi felvételi pontszámok"
             icon={Award}
             fields={PONT_MEZOK}
-            diak={diak}
+            diak={{ ...diak, kozponti_pontok: kozpontiOsszesen }}
             summaryLabel="Központi felvételi pontok összesen"
             summaryKey="kozponti_pontok"
           />
