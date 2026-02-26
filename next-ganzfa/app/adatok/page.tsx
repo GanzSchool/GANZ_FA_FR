@@ -286,9 +286,8 @@ function SectionCard({
 
               {showAsBadge && formatted !== EN_DASH ? (
                 <span
-                  className={`inline-flex min-w-[2rem] items-center justify-center rounded-lg px-2.5 py-1 text-sm font-semibold ${
-                    isGrade ? gradeColor(ertek) : "bg-primary/10 text-primary"
-                  }`}
+                  className={`inline-flex min-w-[2rem] items-center justify-center rounded-lg px-2.5 py-1 text-sm font-semibold ${isGrade ? gradeColor(ertek) : "bg-primary/10 text-primary"
+                    }`}
                 >
                   {formatted}
                 </span>
@@ -409,9 +408,8 @@ function FelveteliRangsorCard({ diak }: { diak: DiakAdat }) {
 
           <div className="grid grid-cols-12 gap-2 text-xs font-semibold text-muted-foreground">
             <div className="col-span-2">Jelölte</div>
-            <div className="col-span-2">Sorszám</div>
             <div className="col-span-2">Kód</div>
-            <div className="col-span-6">Képzés</div>
+            <div className="col-span-8">Képzés</div>
           </div>
 
           <div className="mt-2 divide-y divide-border rounded-xl border border-border">
@@ -490,9 +488,8 @@ function FelveteliRangsorCard({ diak }: { diak: DiakAdat }) {
 function StatCard({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
   return (
     <div
-      className={`flex flex-col items-center justify-center rounded-2xl border px-4 py-5 ${
-        accent ? "border-primary/20 bg-primary/5" : "border-border bg-card"
-      }`}
+      className={`flex flex-col items-center justify-center rounded-2xl border px-4 py-5 ${accent ? "border-primary/20 bg-primary/5" : "border-border bg-card"
+        }`}
     >
       <span className={`text-2xl font-bold ${accent ? "text-primary" : "text-card-foreground"}`}>{value}</span>
       <span className="mt-1 text-xs text-muted-foreground">{label}</span>
