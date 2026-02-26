@@ -336,28 +336,28 @@ function IskolaiPontokCard({ diak }: { diak: DiakAdat }) {
 
       <div className="divide-y divide-border">
         <div className="flex items-center justify-between gap-4 px-5 py-3">
-          <span className="text-sm text-muted-foreground">Nyelvi szintfelmérő (pont)</span>
+          <span className="text-sm text-muted-foreground">Nyelvi szintfelmérő</span>
           <span className="text-right text-sm font-medium text-card-foreground">
             {formatErtek("nyelvi_szintfelmeres", nyelviPont)}
           </span>
         </div>
 
         <div className="flex items-center justify-between gap-4 px-5 py-3">
-          <span className="text-sm text-muted-foreground">Nyelvi szintfelmérő időpont</span>
+          <span className="text-sm text-muted-foreground">Nyelvi szintfelmérő - időpont</span>
           <span className="text-right text-sm font-medium text-card-foreground">
             {formatErtek("nyelvi_szintfelmeres_idopont", nyelviIdopont)}
           </span>
         </div>
 
         <div className="flex items-center justify-between gap-4 px-5 py-3">
-          <span className="text-sm text-muted-foreground">Ismerkedés a Ganz Iskolával (pont)</span>
+          <span className="text-sm text-muted-foreground">Ismerkedj meg a Ganziskolát</span>
           <span className="text-right text-sm font-medium text-card-foreground">
             {formatErtek("ganziskola_ismerkedesi_pontok", ganzPont)}
           </span>
         </div>
 
         <div className="flex items-center justify-between gap-4 px-5 py-3">
-          <span className="text-sm text-muted-foreground">Ganz időpont</span>
+          <span className="text-sm text-muted-foreground">Ismerkedj meg a Ganziskolát - időpont</span>
           <span className="text-right text-sm font-medium text-card-foreground">
             {formatErtek("ganz_idopont", ganzIdopont)}
           </span>
@@ -377,7 +377,7 @@ function FelveteliRangsorCard({ diak }: { diak: DiakAdat }) {
   const { felvettek, kod } = felvettekE(diak)
 
   const veglegesSzoveg = felvettek ? "Felvételt nyert" : "Egyik képzésünkre sem nyert felvételt"
-  const veglegesKepzesSor = felvettek ? `${kod} – ${kepzesNevFromDiak(diak, kod)}` : EN_DASH
+  const veglegesKepzesSor = felvettek ? `${kod} – ${kepzesNevFromDiak(diak, kod)}` : "Hamarosan"
 
   // SQL: jelolt_0101.. mezők "x"-szel -> zöld kör
   const jeloltE = (diak: DiakAdat, kod: string) => {
@@ -563,7 +563,7 @@ export default function Adatok() {
 
         <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
           <StatCard label="Összes pont" value={String(diak.osszespont ?? "Hamarosan")} accent />
-          <StatCard label="Ganz pont" value={String(diak.ganziskola_ismerkedesi_pontok ?? "Hamarosan")} />
+          <StatCard label="Ismerkedj meg a Ganziskolát" value={String(diak.ganziskola_ismerkedesi_pontok ?? "Hamarosan")} />
           <StatCard label="Felvételi státusz" value={String(diak.felveteli_statusz ?? "Hamarosan")} />
         </div>
 
