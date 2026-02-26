@@ -450,7 +450,7 @@ function FelveteliRangsorCard({ diak }: { diak: DiakAdat }) {
 
           <div className="mt-2 divide-y divide-border rounded-xl border border-border">
             {KEPZESEK.map((k) => (
-              <div key={k.kod} className="grid grid-cols-12 gap-2 px-3 py-2 text-sm">
+              <div key={k.kod} className="grid grid-cols-12 gap-2 px-3 py-2 text-sm items-center"> 
                 <div className="col-span-2 font-semibold text-primary">{elozetesHelyezes(diak, k.kod)}</div>
                 <div className="col-span-2 text-muted-foreground">{k.kod}</div>
                 <div className="col-span-8 text-card-foreground">{kepzesNevFromDiak(diak, k.kod)}</div>
