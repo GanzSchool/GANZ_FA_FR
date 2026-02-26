@@ -2,15 +2,7 @@
 
 import React, { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import {
-  GraduationCap,
-  LogOut,
-  User,
-  BookOpen,
-  Award,
-  Target,
-  School,
-} from "lucide-react"
+import { GraduationCap, LogOut, User, BookOpen, Award, Target, School } from "lucide-react"
 
 interface DiakAdat {
   [key: string]: string | number | null | undefined
@@ -99,36 +91,46 @@ function normalizeDiak(input: any): DiakAdat {
 /*  Helpers                                                            */
 /* ------------------------------------------------------------------ */
 
+/**
+ * DÁTUM+IDŐ megjelenítés IDŐZÓNA ELTOLÁS NÉLKÜL:
+ * - nem használ new Date()-et
+ * - stringből formáz "YYYY. MM. DD. HH:MM"-t
+ */
 function formatDatumIdo(ertek: string | number | null | undefined): string {
   if (ertek === null || ertek === undefined || ertek === "" || ertek === "-") return EN_DASH
-  const s = String(ertek)
-  const d = new Date(s)
-  if (isNaN(d.getTime())) return s
-  return d.toLocaleString("hu-HU", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-  })
+
+  let s = String(ertek).trim()
+
+  // ISO -> "YYYY-MM-DD HH:MM:SS" jellegre
+  s = s.replace("T", " ")
+  s = s.replace(/(\.\d+)?Z$/, "") // ".000Z" vagy "Z" levágása
+  s = s.replace(/\.\d+$/, "") // ha csak ms maradt
+
+  // ha csak dátum van: "YYYY-MM-DD"
+  const dateOnly = s.match(/^(\d{4})-(\d{2})-(\d{2})$/)
+  if (dateOnly) return `${dateOnly[1]}. ${dateOnly[2]}. ${dateOnly[3]}.`
+
+  // "YYYY-MM-DD HH:MM" vagy "YYYY-MM-DD HH:MM:SS" -> vegyük az első 16 karaktert
+  const short = s.slice(0, 16)
+
+  // "YYYY-MM-DD HH:MM" -> "YYYY. MM. DD. HH:MM"
+  const m = short.match(/^(\d{4})-(\d{2})-(\d{2})\s(\d{2}:\d{2})$/)
+  if (m) return `${m[1]}. ${m[2]}. ${m[3]}. ${m[4]}`
+
+  return short
 }
 
 function formatErtek(kulcs: string, ertek: string | number | null | undefined): string {
   if (ertek === null || ertek === undefined || ertek === "" || ertek === "-") return EN_DASH
 
   if (kulcs === "szuletesidatum" && typeof ertek === "string") {
-    const d = new Date(ertek)
-    if (!isNaN(d.getTime())) {
-      return d.toLocaleDateString("hu-HU", { year: "numeric", month: "long", day: "numeric" })
-    }
-    return String(ertek)
+    const s = ertek.trim()
+    const m = s.match(/^(\d{4})-(\d{2})-(\d{2})/)
+    if (m) return `${m[1]}. ${m[2]}. ${m[3]}.`
+    return s
   }
 
-  if (
-    kulcs.endsWith("_idopont") ||
-    kulcs === "ganz_idopont" ||
-    kulcs === "nyelvi_szintfelmeres_idopont"
-  ) {
+  if (kulcs.endsWith("_idopont") || kulcs === "ganz_idopont" || kulcs === "nyelvi_szintfelmeres_idopont") {
     return formatDatumIdo(ertek)
   }
 
@@ -198,26 +200,28 @@ function elozetesHelyezes(diak: DiakAdat, kod: string): string {
       return String(h)
     }
   }
-  return "-"
+  return EN_DASH
 }
 
 /* ------------------------------------------------------------------ */
-/*  Felvett-e helper                                                   */
+/*  Végleges felvételi eredmény helper                                 */
 /* ------------------------------------------------------------------ */
 
 function felvettekE(diak: DiakAdat): { felvettek: boolean; kod: string } {
-  const kodRaw = String(diak.felvett_hova_kod ?? "").trim()
-  if (kodRaw) return { felvettek: true, kod: kodRaw }
+  // 1) ha van felvett_kepzes string, abban benne van a kód
+  const felvett = diak["felvett_kepzes"]
+  if (typeof felvett === "string") {
+    const m = felvett.match(/(010[1-4])/)
+    if (m) return { felvettek: true, kod: m[1] }
+  }
 
-  const b0101 = Number(diak.felvett_0101 ?? 0) === 1
-  const b0102 = Number(diak.felvett_0102 ?? 0) === 1
-  const b0103 = Number(diak.felvett_0103 ?? 0) === 1
-  const b0104 = Number(diak.felvett_0104 ?? 0) === 1
-
-  if (b0101) return { felvettek: true, kod: "0101" }
-  if (b0102) return { felvettek: true, kod: "0102" }
-  if (b0103) return { felvettek: true, kod: "0103" }
-  if (b0104) return { felvettek: true, kod: "0104" }
+  // 2) ha vannak felvett_0101.. mezők (pl. "x")
+  for (const k of KEPZESEK) {
+    const key = `felvett_${k.kod}`
+    const v = diak[key]
+    if (typeof v === "string" && v.trim().toLowerCase() === "x") return { felvettek: true, kod: k.kod }
+    if (typeof v === "number" && v === 1) return { felvettek: true, kod: k.kod }
+  }
 
   return { felvettek: false, kod: "" }
 }
@@ -354,7 +358,7 @@ function IskolaiPontokCard({ diak }: { diak: DiakAdat }) {
         </div>
 
         <div className="flex items-center justify-between gap-4 px-5 py-3">
-          <span className="text-sm text-muted-foreground">Ganz Iskola időpont</span>
+          <span className="text-sm text-muted-foreground">Ganz időpont</span>
           <span className="text-right text-sm font-medium text-card-foreground">
             {formatErtek("ganz_idopont", ganzIdopont)}
           </span>
@@ -373,17 +377,29 @@ function IskolaiPontokCard({ diak }: { diak: DiakAdat }) {
 function FelveteliRangsorCard({ diak }: { diak: DiakAdat }) {
   const { felvettek, kod } = felvettekE(diak)
 
-  const veglegesSzoveg = felvettek ? "Felvételt nyert" : "Hamarosan"
+  const veglegesSzoveg = felvettek ? "Felvételt nyert" : "Egyik képzésünkre sem nyert felvételt"
+  const veglegesKepzesSor = felvettek ? `${kod} – ${kepzesNevFromDiak(diak, kod)}` : EN_DASH
 
-  const veglegesKepzesSor = felvettek ? `${kod} – ${kepzesNevFromKod(kod)}` : "Hamarosan"
+  // SQL: jelolt_0101.. mezők "x"-szel -> zöld kör
+  const jeloltE = (diak: DiakAdat, kod: string) => {
+    const jeloltKey = `jelolt_${kod}`
+    const raw = diak[jeloltKey]
+
+    const sqlX =
+      (typeof raw === "string" && raw.trim().toLowerCase() === "x") ||
+      (typeof raw === "number" && raw === 1)
+
+    // ha nincs jelolt_0101 mező, akkor fallback: megjelölt képzések 1-4 alapján
+    const fallback = megjelolesSorrend(diak, kod) !== "-"
+
+    return sqlX || fallback
+  }
 
   return (
     <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
       <div className="flex items-center gap-2.5 border-b border-border bg-muted/40 px-5 py-3.5">
         <Target className="h-4 w-4 text-primary" />
-        <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-          Felvételi rangsor
-        </h2>
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Felvételi rangsor</h2>
       </div>
 
       <div className="p-5 space-y-6">
@@ -392,29 +408,33 @@ function FelveteliRangsorCard({ diak }: { diak: DiakAdat }) {
           <div className="mb-3 text-sm font-semibold text-foreground">Megjelölt képzések</div>
 
           <div className="grid grid-cols-12 gap-2 text-xs font-semibold text-muted-foreground">
+            <div className="col-span-2">Jelölte</div>
             <div className="col-span-2">Sorszám</div>
             <div className="col-span-2">Kód</div>
-            <div className="col-span-8">Képzés</div>
+            <div className="col-span-6">Képzés</div>
           </div>
 
           <div className="mt-2 divide-y divide-border rounded-xl border border-border">
             {KEPZESEK.map((k) => {
+              const jelolt = jeloltE(diak, k.kod)
               const sorszam = megjelolesSorrend(diak, k.kod)
-              const vanJeloles = sorszam !== "-"
 
               return (
-                <div
-                  key={k.kod}
-                  className="grid grid-cols-12 gap-2 px-3 py-2 text-sm items-center"
-                >
-                  <div className="col-span-2 font-semibold text-primary flex items-center gap-2">
-                    {vanJeloles && (
-                      <span className="inline-block h-2.5 w-2.5 rounded-full bg-emerald-500" />
-                    )}
-                    <span>{sorszam}</span>
+                <div key={k.kod} className="grid grid-cols-12 gap-2 px-3 py-2 text-sm items-center">
+                  <div className="col-span-2">
+                    <span
+                      className={
+                        "inline-block h-3 w-3 rounded-full " +
+                        (jelolt ? "bg-emerald-500" : "border border-border bg-transparent")
+                      }
+                      aria-label={jelolt ? "Megjelölve" : "Nincs megjelölve"}
+                      title={jelolt ? "Megjelölve" : "Nincs megjelölve"}
+                    />
                   </div>
+
+                  <div className="col-span-2 font-semibold text-primary">{sorszam}</div>
                   <div className="col-span-2 text-muted-foreground">{k.kod}</div>
-                  <div className="col-span-8 text-card-foreground text-xs">{k.label}</div>
+                  <div className="col-span-6 text-card-foreground">{kepzesNevFromDiak(diak, k.kod)}</div>
                 </div>
               )
             })}
@@ -432,26 +452,13 @@ function FelveteliRangsorCard({ diak }: { diak: DiakAdat }) {
           </div>
 
           <div className="mt-2 divide-y divide-border rounded-xl border border-border">
-            {KEPZESEK.map((k) => {
-              const helyezes = elozetesHelyezes(diak, k.kod)
-              const vanJeloles = helyezes !== "-"
-
-              return (
-                <div
-                  key={k.kod}
-                  className="grid grid-cols-12 gap-2 px-3 py-2 text-sm items-center"
-                >
-                  <div className="col-span-2 font-semibold text-primary flex items-center gap-2">
-                    {vanJeloles && (
-                      <span className="inline-block h-2.5 w-2.5 rounded-full bg-emerald-500" />
-                    )}
-                    <span>{helyezes}</span>
-                  </div>
-                  <div className="col-span-2 text-muted-foreground">{k.kod}</div>
-                  <div className="col-span-8 text-card-foreground text-xs">{k.label}</div>
-                </div>
-              )
-            })}
+            {KEPZESEK.map((k) => (
+              <div key={k.kod} className="grid grid-cols-12 gap-2 px-3 py-2 text-sm">
+                <div className="col-span-2 font-semibold text-primary">{elozetesHelyezes(diak, k.kod)}</div>
+                <div className="col-span-2 text-muted-foreground">{k.kod}</div>
+                <div className="col-span-8 text-card-foreground">{kepzesNevFromDiak(diak, k.kod)}</div>
+              </div>
+            ))}
           </div>
         </div>
 
@@ -487,9 +494,7 @@ function StatCard({ label, value, accent }: { label: string; value: string; acce
         accent ? "border-primary/20 bg-primary/5" : "border-border bg-card"
       }`}
     >
-      <span className={`text-2xl font-bold ${accent ? "text-primary" : "text-card-foreground"}`}>
-        {value}
-      </span>
+      <span className={`text-2xl font-bold ${accent ? "text-primary" : "text-card-foreground"}`}>{value}</span>
       <span className="mt-1 text-xs text-muted-foreground">{label}</span>
     </div>
   )
@@ -515,17 +520,6 @@ export default function Adatok() {
       router.push("/")
     }
   }, [router])
-
-  // Központi pontok összesen: magyar + matematika
-  const kozpontiOsszesen = (() => {
-    if (!diak) return "Hamarosan"
-    const magyar = isNumericValue(diak.magyar_pontok) ? Number(diak.magyar_pontok) : null
-    const matek = isNumericValue(diak.matematika_pontok) ? Number(diak.matematika_pontok) : null
-    if (magyar !== null && matek !== null) return String(magyar + matek)
-    if (magyar !== null) return String(magyar)
-    if (matek !== null) return String(matek)
-    return "Hamarosan"
-  })()
 
   const kijelentkezes = () => {
     localStorage.removeItem("diak")
@@ -566,19 +560,14 @@ export default function Adatok() {
             {diak.nev ? String(diak.nev).charAt(0).toUpperCase() : "D"}
           </div>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground">
-              {String(diak.nev || "Diák")}
-            </h1>
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">{String(diak.nev || "Diák")}</h1>
             <p className="text-sm text-muted-foreground">Személyes adatok áttekintése</p>
           </div>
         </div>
 
         <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
           <StatCard label="Összes pont" value={String(diak.osszespont ?? "Hamarosan")} accent />
-          <StatCard
-            label="Ganz pont"
-            value={String(diak.ganziskola_ismerkedesi_pontok ?? "Hamarosan")}
-          />
+          <StatCard label="Ganz pont" value={String(diak.ganziskola_ismerkedesi_pontok ?? "Hamarosan")} />
           <StatCard label="Felvételi státusz" value={String(diak.felveteli_statusz ?? "Hamarosan")} />
         </div>
 
@@ -590,7 +579,7 @@ export default function Adatok() {
             title="Központi felvételi pontszámok"
             icon={Award}
             fields={PONT_MEZOK}
-            diak={{ ...diak, kozponti_pontok: kozpontiOsszesen }}
+            diak={diak}
             summaryLabel="Központi felvételi pontok összesen"
             summaryKey="kozponti_pontok"
           />
@@ -598,9 +587,7 @@ export default function Adatok() {
           <FelveteliRangsorCard diak={diak} />
         </div>
 
-        <p className="mt-10 text-center text-xs text-muted-foreground">
-          GANZ Iskola {EN_DASH} Minden jog fenntartva
-        </p>
+        <p className="mt-10 text-center text-xs text-muted-foreground">GANZ Iskola {EN_DASH} Minden jog fenntartva</p>
       </main>
     </div>
   )
