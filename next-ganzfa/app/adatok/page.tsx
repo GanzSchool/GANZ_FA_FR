@@ -376,8 +376,8 @@ function IskolaiPontokCard({ diak }: { diak: DiakAdat }) {
 function FelveteliRangsorCard({ diak }: { diak: DiakAdat }) {
   const { felvettek, kod } = felvettekE(diak)
 
-  const veglegesSzoveg = felvettek ? "Felvételt nyert" : "Egyik képzésünkre sem nyert felvételt"
-  const veglegesKepzesSor = felvettek ? `${kod} – ${kepzesNevFromDiak(diak, kod)}` : "Hamarosan"
+  const veglegesSzoveg = "Hamarosan" /*felvettek ? "Felvételt nyert" : "Egyik képzésünkre sem nyert felvételt"*/
+  const veglegesKepzesSor = "Hamarosan"  /*felvettek ? `${kod} – ${kepzesNevFromDiak(diak, kod)}` : "Hamarosan" */
 
   // SQL: jelolt_0101.. mezők "x"-szel -> zöld kör
   const jeloltE = (diak: DiakAdat, kod: string) => {
