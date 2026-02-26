@@ -415,7 +415,6 @@ function FelveteliRangsorCard({ diak }: { diak: DiakAdat }) {
           <div className="mt-2 divide-y divide-border rounded-xl border border-border">
             {KEPZESEK.map((k) => {
               const jelolt = jeloltE(diak, k.kod)
-              const sorszam = megjelolesSorrend(diak, k.kod)
 
               return (
                 <div key={k.kod} className="grid grid-cols-12 gap-2 px-3 py-2 text-sm items-center">
@@ -425,14 +424,14 @@ function FelveteliRangsorCard({ diak }: { diak: DiakAdat }) {
                         "inline-block h-3 w-3 rounded-full " +
                         (jelolt ? "bg-emerald-500" : "border border-border bg-transparent")
                       }
-                      aria-label={jelolt ? "Megjelölve" : "Nincs megjelölve"}
-                      title={jelolt ? "Megjelölve" : "Nincs megjelölve"}
                     />
                   </div>
 
-                  <div className="col-span-2 font-semibold text-primary">{sorszam}</div>
                   <div className="col-span-2 text-muted-foreground">{k.kod}</div>
-                  <div className="col-span-6 text-card-foreground">{kepzesNevFromDiak(diak, k.kod)}</div>
+
+                  <div className="col-span-8 text-card-foreground">
+                    {kepzesNevFromDiak(diak, k.kod)}
+                  </div>
                 </div>
               )
             })}
