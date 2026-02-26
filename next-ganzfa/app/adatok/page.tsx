@@ -584,7 +584,7 @@ export default function Adatok() {
         </div>
 
         <p className="mt-10 text-center text-xs text-muted-foreground">GANZ Iskola {EN_DASH} Minden jog fenntartva</p>
-        <p className="mt-10 text-center text-xs text-muted-foreground">További információ miatt keressék a Zsiga Bácsit!</p>
+        <p className="mt-10 text-center text-xs text-muted-foreground">További információ miatt keressék a Zsiga Bácsit! :) </p>
       </main>
     </div>
   )
