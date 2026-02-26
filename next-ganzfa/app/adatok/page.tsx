@@ -52,20 +52,18 @@ const NYOLCADIKOS_MEZOK: Record<string, string> = {
 
 const PONT_MEZOK: Record<string, string> = {
   magyar_pontok: "Magyar pontok",
-  matematika_pontok: "Matematika pontok"
+  matematika_pontok: "Matematika pontok",
 }
 
-
-
 /* ------------------------------------------------------------------ */
-/*  Képzések (0101-0104)                                               */
+/*  Képzések (0101-0104) - TELJES NEVEK                               */
 /* ------------------------------------------------------------------ */
 
 const KEPZESEK = [
-  { kod: "0101", label: "0101" },
-  { kod: "0102", label: "0102" },
-  { kod: "0103", label: "0103" },
-  { kod: "0104", label: "0104" },
+  { kod: "0101", label: "Technikum, angol nyelvi előkészítő + 5 évfolyam, magyar - angol két tanítási nyelvű iskolai oktatás" },
+  { kod: "0102", label: "Technikum, 5 évfolyam, magyar - angol két tanítási nyelvű iskolai oktatás, szoftverfejlesztő és -tesztelő technikus" },
+  { kod: "0103", label: "Technikum, 5 évfolyam, szoftverfejlesztő és -tesztelő technikus" },
+  { kod: "0104", label: "Technikum, 5 évfolyam, Gépész technikus CAD-CAM szakmairány" },
 ] as const
 
 /* ------------------------------------------------------------------ */
@@ -113,7 +111,7 @@ function formatErtek(kulcs: string, ertek: string | number | null | undefined): 
     return String(ertek)
   }
 
-  if (kulcs.endsWith("_idopont") || kulcs === "ganz_idopont") {
+  if (kulcs.endsWith("_idopont") || kulcs === "ganz_idopont" || kulcs === "nyelvi_szintfelmeres_idopont") {
     return formatDatumIdo(ertek)
   }
 
@@ -136,19 +134,28 @@ function gradeColor(val: string | number | null | undefined): string {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Képzés név / sorrend helper                                        */
+/*  Képzés név helper                                                  */
+/* ------------------------------------------------------------------ */
+
+function kepzesNevFromKod(kod: string): string {
+  const kepzes = KEPZESEK.find((k) => k.kod === kod)
+  return kepzes ? kepzes.label : kod
+}
+
+/* ------------------------------------------------------------------ */
+/*  Képzés keresés a megjelölt mezőkben                               */
 /* ------------------------------------------------------------------ */
 
 function kepzesNevFromDiak(diak: DiakAdat, kod: string): string {
   const fields = ["megjelolt_kepzes_1", "megjelolt_kepzes_2", "megjelolt_kepzes_3", "megjelolt_kepzes_4"] as const
   for (const f of fields) {
     const v = diak[f]
-    if (typeof v === "string" && v.includes(kod)) return v
+    if (typeof v === "string" && v.includes(kod)) return kepzesNevFromKod(kod)
   }
-  // fallback: ha nincs megjelölt név, próbáljuk a felvett_kepzes-t
+  // fallback
   const felvett = diak["felvett_kepzes"]
-  if (typeof felvett === "string" && felvett.includes(kod)) return felvett
-  return kod
+  if (typeof felvett === "string" && felvett.includes(kod)) return kepzesNevFromKod(kod)
+  return kepzesNevFromKod(kod)
 }
 
 function megjelolesSorrend(diak: DiakAdat, kod: string): string {
@@ -179,15 +186,13 @@ function elozetesHelyezes(diak: DiakAdat, kod: string): string {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Felvett-e helper: a trigger miatt ez a legbiztosabb                 */
+/*  Felvett-e helper                                                   */
 /* ------------------------------------------------------------------ */
 
 function felvettekE(diak: DiakAdat): { felvettek: boolean; kod: string } {
-  // 1) ha felvett_hova_kod megvan, az a legjobb
   const kodRaw = String(diak.felvett_hova_kod ?? "").trim()
   if (kodRaw) return { felvettek: true, kod: kodRaw }
 
-  // 2) különben a boolean mezők alapján eldöntjük
   const b0101 = Number(diak.felvett_0101 ?? 0) === 1
   const b0102 = Number(diak.felvett_0102 ?? 0) === 1
   const b0103 = Number(diak.felvett_0103 ?? 0) === 1
@@ -333,7 +338,7 @@ function IskolaiPontokCard({ diak }: { diak: DiakAdat }) {
         </div>
 
         <div className="flex items-center justify-between gap-4 px-5 py-3">
-          <span className="text-sm text-muted-foreground">Ganz időpont</span>
+          <span className="text-sm text-muted-foreground">Ganz Iskola időpont</span>
           <span className="text-right text-sm font-medium text-card-foreground">
             {formatErtek("ganz_idopont", ganzIdopont)}
           </span>
@@ -354,11 +359,11 @@ function FelveteliRangsorCard({ diak }: { diak: DiakAdat }) {
 
   const veglegesSzoveg = felvettek
     ? "Felvételt nyert"
-    : "Egyik képzésünkre sem nyert felvételt"
+    : "Hamarosan"
 
   const veglegesKepzesSor = felvettek
-    ? `${kod} – ${kepzesNevFromDiak(diak, kod)}`
-    : EN_DASH
+    ? `${kod} – ${kepzesNevFromKod(kod)}`
+    : "Hamarosan"
 
   return (
     <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
@@ -385,7 +390,7 @@ function FelveteliRangsorCard({ diak }: { diak: DiakAdat }) {
               <div key={k.kod} className="grid grid-cols-12 gap-2 px-3 py-2 text-sm">
                 <div className="col-span-2 font-semibold text-primary">{megjelolesSorrend(diak, k.kod)}</div>
                 <div className="col-span-2 text-muted-foreground">{k.kod}</div>
-                <div className="col-span-8 text-card-foreground">{kepzesNevFromDiak(diak, k.kod)}</div>
+                <div className="col-span-8 text-card-foreground text-xs">{k.label}</div>
               </div>
             ))}
           </div>
@@ -406,7 +411,7 @@ function FelveteliRangsorCard({ diak }: { diak: DiakAdat }) {
               <div key={k.kod} className="grid grid-cols-12 gap-2 px-3 py-2 text-sm">
                 <div className="col-span-2 font-semibold text-primary">{elozetesHelyezes(diak, k.kod)}</div>
                 <div className="col-span-2 text-muted-foreground">{k.kod}</div>
-                <div className="col-span-8 text-card-foreground">{kepzesNevFromDiak(diak, k.kod)}</div>
+                <div className="col-span-8 text-card-foreground text-xs">{k.label}</div>
               </div>
             ))}
           </div>
@@ -471,7 +476,18 @@ export default function Adatok() {
     } catch {
       router.push("/")
     }
-  }, [router]) // FIX: mindig ugyanaz a dependency array
+  }, [router])
+
+  // Központi pontok összesen: magyar + matematika
+  const kozpontiOsszesen = (() => {
+    if (!diak) return "Hamarosan"
+    const magyar = isNumericValue(diak.magyar_pontok) ? Number(diak.magyar_pontok) : null
+    const matek = isNumericValue(diak.matematika_pontok) ? Number(diak.matematika_pontok) : null
+    if (magyar !== null && matek !== null) return String(magyar + matek)
+    if (magyar !== null) return String(magyar)
+    if (matek !== null) return String(matek)
+    return "Hamarosan"
+  })()
 
   const kijelentkezes = () => {
     localStorage.removeItem("diak")
