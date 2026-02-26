@@ -6,7 +6,7 @@ import './globals.css'
 const _inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'GANZ FA - Diak Portal',
+  title: 'GANZ Felvételi Pont',
   description: 'GANZ Abraham Iskola diak portal - Jelentkezz be az adataid megtekintesehez',
 }
 
