@@ -40,7 +40,6 @@ export default function Home() {
         router.push("/adatok")
       } else {
         setHiba("Hibás OM azonosító vagy születési dátum")
-        setHiba("Probléma esetén kérjük, írjon az alábbi e-mail címre: info@ganzportalok.hu")
       }
     } catch {
       setHiba("Hálózati hiba történt. Próbálja újra.")
@@ -189,6 +188,7 @@ export default function Home() {
         {/* Footer */}
         <p className="mt-8 text-center text-xs text-primary-foreground/40">
           {"GANZ Iskola \u2013 Minden jog fenntartva"}
+          {"Probléma esetén kérjük, írjon az alábbi e-mail címre: info@ganzportalok.hu"}
         </p>
       </div>
     </div>
