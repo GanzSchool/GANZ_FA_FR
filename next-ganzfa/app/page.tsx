@@ -40,6 +40,7 @@ export default function Home() {
         router.push("/adatok")
       } else {
         setHiba("Hibás OM azonosító vagy születési dátum")
+        setHiba("Probléma esetén kérjük, írjon az alábbi e-mail címre: info@ganzportalok.hu")
       }
     } catch {
       setHiba("Hálózati hiba történt. Próbálja újra.")
