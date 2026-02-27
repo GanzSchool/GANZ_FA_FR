@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { GraduationCap, LogOut, User, BookOpen, Award, Target, School } from "lucide-react"
+import { GraduationCap, LogOut, User, BookOpen, Award, Target, School, Mail } from "lucide-react"
 
 interface DiakAdat {
   [key: string]: string | number | null | undefined
@@ -46,9 +46,6 @@ const PONT_MEZOK: Record<string, string> = {
   matematika_pontok: "Matematika pontok",
 }
 
-const INFORMACIO: Record<string, string> = {
-  informacio: "Problmléamavsvahjsg",
-}
 
 /* ------------------------------------------------------------------ */
 /*  Képzések (0101-0104) - TELJES NEVEK                               */
@@ -347,21 +344,21 @@ function IskolaiPontokCard({ diak }: { diak: DiakAdat }) {
         </div>
 
         <div className="flex items-center justify-between gap-4 px-5 py-3">
-          <span className="text-sm text-muted-foreground">Nyelvi szintfelmérő - időpont</span>
+          <span className="text-sm text-muted-foreground">{"Nyelvi szintfelmérő \u2013 időpont"}</span>
           <span className="text-right text-sm font-medium text-card-foreground">
             {formatErtek("nyelvi_szintfelmeres_idopont", nyelviIdopont)}
           </span>
         </div>
 
         <div className="flex items-center justify-between gap-4 px-5 py-3">
-          <span className="text-sm text-muted-foreground">Ismerd meg a Ganziskolát</span>
+          <span className="text-sm text-muted-foreground">{"Ismerd meg a Ganziskolát"}</span>
           <span className="text-right text-sm font-medium text-card-foreground">
             {formatErtek("ganziskola_ismerkedesi_pontok", ganzPont)}
           </span>
         </div>
 
         <div className="flex items-center justify-between gap-4 px-5 py-3">
-          <span className="text-sm text-muted-foreground">Ismerd meg a Ganziskolát - időpont</span>
+          <span className="text-sm text-muted-foreground">{"Ismerd meg a Ganziskolát \u2013 időpont"}</span>
           <span className="text-right text-sm font-medium text-card-foreground">
             {formatErtek("ganz_idopont", ganzIdopont)}
           </span>
@@ -378,10 +375,8 @@ function IskolaiPontokCard({ diak }: { diak: DiakAdat }) {
 /* ------------------------------------------------------------------ */
 
 function FelveteliRangsorCard({ diak }: { diak: DiakAdat }) {
-  const { felvettek, kod } = felvettekE(diak)
-
-  const veglegesSzoveg = "Hamarosan" /*felvettek ? "Felvételt nyert" : "Egyik képzésünkre sem nyert felvételt"*/
-  const veglegesKepzesSor = "Hamarosan"  /*felvettek ? `${kod} – ${kepzesNevFromDiak(diak, kod)}` : "Hamarosan" */
+  const veglegesSzoveg = "Hamarosan"
+  const veglegesKepzesSor = "Hamarosan"
 
   // SQL: jelolt_0101.. mezők "x"-szel -> zöld kör
   const jeloltE = (diak: DiakAdat, kod: string) => {
@@ -408,12 +403,12 @@ function FelveteliRangsorCard({ diak }: { diak: DiakAdat }) {
       <div className="p-5 space-y-6">
         {/* 1) Megjelölt képzések */}
         <div>
-          <div className="mb-3 text-sm font-semibold text-foreground">Megjelölt képzések</div>
+          <div className="mb-3 text-sm font-semibold text-foreground">{"Megjelölt képzések"}</div>
 
           <div className="grid grid-cols-12 gap-2 text-xs font-semibold text-muted-foreground">
-            <div className="col-span-2">Jelölte</div>
-            <div className="col-span-2">Kód</div>
-            <div className="col-span-8">Képzés</div>
+            <div className="col-span-2">{"Jelölte"}</div>
+            <div className="col-span-2">{"Kód"}</div>
+            <div className="col-span-8">{"Képzés"}</div>
           </div>
 
           <div className="mt-2 divide-y divide-border rounded-xl border border-border">
@@ -444,12 +439,12 @@ function FelveteliRangsorCard({ diak }: { diak: DiakAdat }) {
 
         {/* 2) Előzetes rangsor */}
         <div>
-          <div className="mb-3 text-sm font-semibold text-foreground">Ideiglenes felvételi rangsor | 2026.03.20 - 2026.03.21</div>
+          <div className="mb-3 text-sm font-semibold text-foreground">{"Ideiglenes felvételi rangsor | 2026.03.20 - 2026.03.21"}</div>
 
           <div className="grid grid-cols-12 gap-2 text-xs font-semibold text-muted-foreground">
-            <div className="col-span-2">Helyezés</div>
-            <div className="col-span-2">Kód</div>
-            <div className="col-span-8">Képzés</div>
+            <div className="col-span-2">{"Helyezés"}</div>
+            <div className="col-span-2">{"Kód"}</div>
+            <div className="col-span-8">{"Képzés"}</div>
           </div>
 
           <div className="mt-2 divide-y divide-border rounded-xl border border-border">
@@ -465,16 +460,16 @@ function FelveteliRangsorCard({ diak }: { diak: DiakAdat }) {
 
         {/* 3) Végleges rangsor */}
         <div>
-          <div className="mb-3 text-sm font-semibold text-foreground">Végleges felvételi eredmény | 2026.04.30. - 2026.05.04.</div>
+          <div className="mb-3 text-sm font-semibold text-foreground">{"Végleges felvételi eredmény | 2026.04.30. - 2026.05.04."}</div>
 
           <div className="divide-y divide-border rounded-xl border border-border">
             <div className="flex items-center justify-between px-3 py-2 text-sm">
-              <span className="text-muted-foreground">Eredmény</span>
+              <span className="text-muted-foreground">{"Eredmény"}</span>
               <span className="font-semibold text-card-foreground">{veglegesSzoveg}</span>
             </div>
 
             <div className="flex items-center justify-between px-3 py-2 text-sm">
-              <span className="text-muted-foreground">Felvett képzés</span>
+              <span className="text-muted-foreground">{"Felvett képzés"}</span>
               <span className="font-semibold text-card-foreground">{veglegesKepzesSor}</span>
             </div>
           </div>
@@ -496,6 +491,42 @@ function StatCard({ label, value, accent }: { label: string; value: string; acce
     >
       <span className={`text-2xl font-bold ${accent ? "text-primary" : "text-card-foreground"}`}>{value}</span>
       <span className="mt-1 text-xs text-muted-foreground">{label}</span>
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  Adateltérés info banner                                            */
+/* ------------------------------------------------------------------ */
+
+function AdatelteresInfo() {
+  return (
+    <div className="mt-8 overflow-hidden rounded-2xl border border-amber-200 bg-amber-50">
+      <div className="flex items-start gap-3.5 px-5 py-4">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-amber-100">
+          <Mail className="h-4 w-4 text-amber-600" />
+        </div>
+        <div className="space-y-1.5">
+          <p className="text-sm font-semibold text-amber-900">
+            {"Eltérést tapasztal az adatokban?"}
+          </p>
+          <p className="text-sm leading-relaxed text-amber-800">
+            {"Kérjük, írjon a "}
+            <a
+              href="mailto:bornemissza.zsigmond@ganziskola.hu?subject=felvételi"
+              className="font-semibold underline underline-offset-2 transition-colors hover:text-amber-950"
+            >
+              {"bornemissza.zsigmond@ganziskola.hu"}
+            </a>
+            {" e-mail címre."}
+          </p>
+          <p className="text-xs leading-relaxed text-amber-700">
+            {"Tárgy: "}
+            <span className="font-medium">{"felvételi"}</span>
+            {". A levél tartalmazza a gyermeke oktatási azonosítóját és nevét."}
+          </p>
+        </div>
+      </div>
     </div>
   )
 }
@@ -549,7 +580,7 @@ export default function Adatok() {
             className="flex items-center gap-2 rounded-xl border border-border px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-card-foreground"
           >
             <LogOut className="h-4 w-4" />
-            Kijelentkezés
+            {"Kijelentkezés"}
           </button>
         </div>
       </header>
@@ -561,7 +592,7 @@ export default function Adatok() {
           </div>
           <div>
             <h1 className="text-2xl font-bold tracking-tight text-foreground">{String(diak.nev || "Diák")}</h1>
-            <p className="text-sm text-muted-foreground">Személyes adatok áttekintése</p>
+            <p className="text-sm text-muted-foreground">{"Személyes adatok áttekintése"}</p>
           </div>
         </div>
 
@@ -587,7 +618,9 @@ export default function Adatok() {
           <FelveteliRangsorCard diak={diak} />
         </div>
 
-        <p className="mt-10 text-center text-xs text-muted-foreground">@ Ganz Portálok 2026 {EN_DASH} Minden jog fenntartva</p>
+        <AdatelteresInfo />
+
+        <p className="mt-10 text-center text-xs text-muted-foreground">{"@ Ganz Portálok 2026 \u2013 Minden jog fenntartva"}</p>
       </main>
     </div>
   )
