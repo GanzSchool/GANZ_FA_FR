@@ -46,6 +46,10 @@ const PONT_MEZOK: Record<string, string> = {
   matematika_pontok: "Matematika pontok",
 }
 
+const INFORMACIO: Record<string, string> = {
+  informacio: "Problmléamavsvahjsg",
+}
+
 /* ------------------------------------------------------------------ */
 /*  Képzések (0101-0104) - TELJES NEVEK                               */
 /* ------------------------------------------------------------------ */
@@ -440,7 +444,7 @@ function FelveteliRangsorCard({ diak }: { diak: DiakAdat }) {
 
         {/* 2) Előzetes rangsor */}
         <div>
-          <div className="mb-3 text-sm font-semibold text-foreground">Előzetes rangsor</div>
+          <div className="mb-3 text-sm font-semibold text-foreground">Ideiglenes felvételi rangsor | 2026.03.20 - 2026.03.21</div>
 
           <div className="grid grid-cols-12 gap-2 text-xs font-semibold text-muted-foreground">
             <div className="col-span-2">Helyezés</div>
@@ -461,7 +465,7 @@ function FelveteliRangsorCard({ diak }: { diak: DiakAdat }) {
 
         {/* 3) Végleges rangsor */}
         <div>
-          <div className="mb-3 text-sm font-semibold text-foreground">Végleges felvételi eredmény</div>
+          <div className="mb-3 text-sm font-semibold text-foreground">Végleges felvételi eredmény | 2026.04.30. - 2026.05.04.</div>
 
           <div className="divide-y divide-border rounded-xl border border-border">
             <div className="flex items-center justify-between px-3 py-2 text-sm">
@@ -583,8 +587,7 @@ export default function Adatok() {
           <FelveteliRangsorCard diak={diak} />
         </div>
 
-        <p className="mt-10 text-center text-xs text-muted-foreground">GANZ Iskola {EN_DASH} Minden jog fenntartva</p>
-        <p className="mt-10 text-center text-xs text-muted-foreground">További információ miatt keressék a Zsiga Bácsit! :) </p>
+        <p className="mt-10 text-center text-xs text-muted-foreground">@ Ganz Portálok 2026 {EN_DASH} Minden jog fenntartva</p>
       </main>
     </div>
   )
