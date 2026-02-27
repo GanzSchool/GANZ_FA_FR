@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { GraduationCap, Loader2, CalendarIcon } from "lucide-react"
+import { GraduationCap, Loader2, CalendarIcon, Mail } from "lucide-react"
 import { format, parse } from "date-fns"
 import { hu } from "date-fns/locale"
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp"
@@ -39,7 +39,7 @@ export default function Home() {
         localStorage.setItem("diak", JSON.stringify(adat))
         router.push("/adatok")
       } else {
-        setHiba("Hibás OM azonosító vagy születési dátum")
+        setHiba("Hibás azonosító vagy jelszó")
       }
     } catch {
       setHiba("Hálózati hiba történt. Próbálja újra.")
@@ -101,6 +101,7 @@ export default function Home() {
                   </InputOTP>
                 </div>
                 <p className="mt-2.5 text-center text-[11px] text-muted-foreground/70">
+    
                 </p>
               </div>
             </div>
@@ -185,10 +186,27 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Info banner */}
+        <div className="mt-6 overflow-hidden rounded-2xl border border-primary-foreground/10 bg-primary-foreground/5 backdrop-blur-sm">
+          <div className="flex items-start gap-3 px-5 py-4">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-primary-foreground/10">
+              <Mail className="h-4 w-4 text-primary-foreground/70" />
+            </div>
+            <p className="text-sm leading-relaxed text-primary-foreground/70">
+              {"Probléma esetén kérjük, írjon az alábbi e-mail címre: "}
+              <a
+                href="mailto:info@ganzportalok.hu"
+                className="font-semibold text-primary-foreground underline underline-offset-2 transition-colors hover:text-primary-foreground/90"
+              >
+                {"info@ganzportalok.hu"}
+              </a>
+            </p>
+          </div>
+        </div>
+
         {/* Footer */}
-        <p className="mt-8 text-center text-xs text-primary-foreground/40">
-          {"GANZ Iskola \u2013 Minden jog fenntartva"}
-          {"Probléma esetén kérjük, írjon az alábbi e-mail címre: info@ganzportalok.hu"}
+        <p className="mt-6 text-center text-xs text-primary-foreground/40">
+          {"@ Ganz Portálok 2026 \u2013 Minden jog fenntartva"}
         </p>
       </div>
     </div>
